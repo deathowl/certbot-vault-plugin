@@ -8,7 +8,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name='certbot-vault',  # Required
-    version='0.1.0',  # Required
+    version='0.1.1',  # Required
     description='Certbot plugin to store certificates in Hashicorp Vault',
     url='https://github.com/deathowl/certbot-vault-plugin',  # Optional
 
@@ -36,7 +36,7 @@ setup(
         'setuptools',
         'zope.component==4.4.1',
         'zope.event==4.1.0',
-        'zope.interface==4.1.3',
+        'zope.interface==4.4.3',
         'hvac'
     ],
     include_package_data=True,
