@@ -1,0 +1,13 @@
+language: python
+python:
+- '2.7'
+install:
+- pip install -r requirements.txt
+- pip install -r requirements.dev
+script:
+- pytest
+deploy:
+  provider: pypi
+  user: deathowl
+  password:
+    secure: FTC3rrXMB7YkUsVGJ3mGU1WE/tWpAj+CHx7MZmbINWbPMV/hosqn2DQpaFfE2frVqkrwUqvjKvd8XFNkbLTXN+5evcewz0Dn76Qr3zTbCZjRBid/USrwBftHHfxp1EaOeMPGF0E5fkXGEgYrK0/gXaHjtoDPgm1/e2VMVWE8bdzzgu1NcClHIImRRVSSHldgshj9nBUTdIVG1eBIuBx5uUVnhj6Eo2ou76TEbu4bbYqHv8wLNL2mL24nrX4dbzctND9s4pWWERip5gZ42XkZ59aPvwBlxZDuau74K7r6K6+DKHn9jVpoZRXbQhRmMu1wUMnRwdk7zGR2Z0Db2lt896XHmv1AB5/DlV6rJ92TeDKQxYkRbDVLK2ONodaX5J+vTqzy0kIDdeCz0ZsrvRKEMt3XFwY23XlMnhBOTM6juPFy+ZiLrcSHx+/ZT7bH6HmwIB9BU+DWfT+OE2v3bRvsaVBajLA3WK1eRBJPOE4xFIRuuR837YEk8ZHt12q+Xe8QwXdbReBKkU0peIk26i5kHqgASSSOHraLoCD1ls+zYKlmmSESNDHiofOO93ewQ6IlT0Bb6VuE5fS7CljWIK3e+95Ga5Xlj0PZ8PZ7ZLIwSGqBwZ3JCm/NiHRjAX2hZZ1Mz98IXIkWW+s5Wuo4CYPIKtN+MuCdOZWvo82amCazKOg=
