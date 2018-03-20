@@ -41,8 +41,8 @@ class Installer(common.Plugin):
         return ""
 
     def get_all_names(self):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
-
+        return []
+    
     def deploy_cert(self, domain, cert_path, key_path, chain_path, fullchain_path):
         """
         Upload Certificate to Vault

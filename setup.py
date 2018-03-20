@@ -8,7 +8,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name='certbot-vault',  # Required
-    version='0.1.1',  # Required
+    version='0.1.2',  # Required
     description='Certbot plugin to store certificates in Hashicorp Vault',
     url='https://github.com/deathowl/certbot-vault-plugin',  # Optional
 
