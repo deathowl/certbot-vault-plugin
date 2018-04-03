@@ -30,7 +30,7 @@ setup(
     packages=find_packages(),  # Required
 
     install_requires=[
-        'acme==0.22.0',
+        'acme>=0.22.0',
         'certbot>=0.22.0',
         'PyOpenSSL',
         'setuptools',
