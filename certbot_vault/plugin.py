@@ -51,7 +51,7 @@ class VaultInstaller(common.Plugin):
         name = "certificates/le-%s" % domain
         body = open(cert_path).read()
         key = open(key_path).read()
-        chain = open(chain_path).read()
+        chain = open(fullchain_path).read()
 
         self.hvac_client.write(path=name, body=body, key=key, chain=chain)
 
