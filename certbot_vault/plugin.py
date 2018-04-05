@@ -15,7 +15,7 @@ from certbot.plugins import common
 
 logger = logging.getLogger(__name__)
 
-class Installer(common.Plugin):
+class VaultInstaller(common.Plugin):
     zope.interface.implements(interfaces.IInstaller)
     zope.interface.classProvides(interfaces.IPluginFactory)
 
