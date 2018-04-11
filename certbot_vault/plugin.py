@@ -29,7 +29,7 @@ class VaultInstaller(common.Plugin):
             help="CloudFront distribution id")
 
     def __init__(self, *args, **kwargs):
-        super(Installer, self).__init__(*args, **kwargs)
+        super(VaultInstaller, self).__init__(*args, **kwargs)
         self.hvac_client = hvac.Client(self.conf('vault-url'), token=self.conf('vault-token'))
 
 
