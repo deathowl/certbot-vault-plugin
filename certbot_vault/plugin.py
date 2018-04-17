@@ -47,7 +47,7 @@ class VaultInstaller(common.Plugin):
         """
         Upload Certificate to Vault
         """
-
+        self.hvac_client.renew_token()
         name = "certificates/le-%s" % domain
         body = open(cert_path).read()
         key = open(key_path).read()
