@@ -34,9 +34,9 @@ setup(
         'certbot>=0.22.0',
         'PyOpenSSL',
         'setuptools',
-        'zope.component==4.4.1',
-        'zope.event==4.1.0',
-        'zope.interface==4.4.3',
+        'zope.component',
+        'zope.event',
+        'zope.interface',
         'hvac'
     ],
     include_package_data=True,
