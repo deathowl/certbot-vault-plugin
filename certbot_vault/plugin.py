@@ -32,8 +32,6 @@ class VaultInstaller(common.Plugin):
         super(VaultInstaller, self).__init__(*args, **kwargs)
         self.hvac_client = hvac.Client(self.conf('vault-url'), token=self.conf('vault-token'))
 
-
-
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
         pass  # pragma: no cover
 
