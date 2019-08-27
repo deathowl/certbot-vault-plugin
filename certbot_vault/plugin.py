@@ -15,10 +15,10 @@ from certbot.plugins import common
 
 logger = logging.getLogger(__name__)
 
-class VaultInstaller(common.Plugin):
-    zope.interface.implements(interfaces.IInstaller)
-    zope.interface.classProvides(interfaces.IPluginFactory)
 
+@zope.interface.implementer(interfaces.IInstaller)
+@zope.interface.provider(interfaces.IPluginFactory)
+class VaultInstaller(common.Plugin):
     description = "Vault Cert Installer"
 
     @classmethod
@@ -31,8 +31,6 @@ class VaultInstaller(common.Plugin):
     def __init__(self, *args, **kwargs):
         super(VaultInstaller, self).__init__(*args, **kwargs)
         self.hvac_client = hvac.Client(self.conf('vault-url'), token=self.conf('vault-token'))
-
-
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
         pass  # pragma: no cover
