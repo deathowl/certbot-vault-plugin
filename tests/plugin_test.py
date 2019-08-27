@@ -6,7 +6,7 @@ import pytest
 import tempfile
 SETTINGS_DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../'))
 sys.path.insert(0, SETTINGS_DIRECTORY)
-from certbot_vault.plugin import Installer
+from certbot_vault.plugin import VaultInstaller
 import mock
 import hvac
 
@@ -38,7 +38,7 @@ class TestAuthPlugin(object):
         self.config.server = "example.com"
         self.config.__setattr__(self.name_cfg + 'vault-url', "http://localhost:8200")
         self.config.__setattr__(self.name_cfg + 'vault-url', "testike")
-        self.subject = Installer(self.config, self.name)
+        self.subject = VaultInstaller(self.config, self.name)
         self.subject.hvac_client.write = mock.MagicMock(hvac.Client)
 
 
