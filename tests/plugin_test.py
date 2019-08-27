@@ -51,6 +51,6 @@ class TestAuthPlugin(object):
         open(os.path.join(sub, "test.chain"), "w+").write("testchain")
 
         self.subject.deploy_cert("test", os.path.join(sub, "test.crt"),  os.path.join(sub, "test.key"),
-                                 os.path.join(sub, "test.chain"), "")
+                                 os.path.join(sub, "test.chain"), os.path.join(sub, "test.fchain"))
         self.subject.hvac_client.write.assert_called_with(body='testcrt', chain='testchain', key='testkey',
                                                           path='certificates/le-test')
