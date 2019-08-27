@@ -2,6 +2,9 @@
 # Certbot-Vault
 Certbot plugin for Vault
 
+![travis](https://travis-ci.org/deathowl/certbot-vault-plugin.svg?branch=master "Build status")
+
+
 Installation guide:
 * Install [Vault](https://www.vaultproject.io/)
 * Get a Vault token
