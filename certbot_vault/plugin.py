@@ -29,11 +29,11 @@ class VaultInstaller(common.Plugin):
             default=os.getenv('VAULT_TOKEN'),
             help="Vault access token"
         )
-        add("vault-role-id"
+        add("vault-role-id",
             default=os.getenv('VAULT_ROLE_ID'),
             help='AppRole ID'
         )
-        add("vault-secret-id"
+        add("vault-secret-id",
             default=os.getenv('VAULT_SECRET_ID'),
             help='AppRole Secret ID'
         )
