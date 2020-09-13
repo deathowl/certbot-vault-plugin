@@ -23,20 +23,40 @@ class VaultInstaller(common.Plugin):
 
     @classmethod
     def add_parser_arguments(cls, add):
-        add("vault-token", default=os.getenv('VAULT_TOKEN'),
-            help="CloudFront distribution id")
-        add("vault-url", default=os.getenv('VAULT_URL'),
-            help="CloudFront distribution id")
+        add("vault-token",
+            default=os.getenv('VAULT_TOKEN'),
+            help="Vault access token"
+        )
+        add("vault-addr",
+            default=os.getenv('VAULT_ADDR'),
+            help="Vault URL"
+        )
+        add("vault-path",
+            default=os.getenv('VAULT_PATH'),
+            help="Vault Path"
+        )
 
     def __init__(self, *args, **kwargs):
         super(VaultInstaller, self).__init__(*args, **kwargs)
-        self.hvac_client = hvac.Client(self.conf('vault-url'), token=self.conf('vault-token'))
+        self.hvac_client = hvac.Client(self.conf('vault-addr'), token=self.conf('vault-token'))
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
+        """
+        Prepare the plugin
+        """
         pass  # pragma: no cover
 
     def more_info(self):  # pylint: disable=missing-docstring,no-self-use
-        return ""
+        """
+        Human-readable string to help understand the module
+        """
+        return (
+            "Hashicorp Vault Plugin",
+            "Vault: %s Path: %" % (
+                self.conf('vault-addr'),
+                self.conf('vault-path')
+            )
+        )
 
     def get_all_names(self):  # pylint: disable=missing-docstring,no-self-use
         return []
@@ -44,14 +64,28 @@ class VaultInstaller(common.Plugin):
     def deploy_cert(self, domain, cert_path, key_path, chain_path, fullchain_path):
         """
         Upload Certificate to Vault
-        """
-        self.hvac_client.renew_token()
-        name = "certificates/le-%s" % domain
-        body = open(cert_path).read()
-        key = open(key_path).read()
-        chain = open(fullchain_path).read()
 
-        self.hvac_client.write(path=name, body=body, key=key, chain=chain)
+        :param str domain: domain to deploy certificate file
+        :param str cert_path: absolute path to the certificate file
+        :param str key_path: absolute path to the private key file
+        :param str chain_path: absolute path to the certificate chain file
+        :param str fullchain_path: absolute path to the certificate fullchain file (cert plus chain)
+
+        :raises .PluginError: when cert cannot be deployed
+        """
+
+        self.hvac_client.renew_token()
+
+        data = {
+            'cert': open(cert_path).read(),
+            'key': open(key_path).read(),
+            'chain': open(fullchain_path).read()
+        }
+
+        self.hvac_client.write(
+            os.path.join(self.conf('vault-path'), 'data', domain),
+            data=data
+        )
 
     def enhance(self, domain, enhancement, options=None):  # pylint: disable=missing-docstring,no-self-use
         pass  # pragma: no cover

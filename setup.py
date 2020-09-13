@@ -1,33 +1,36 @@
-from setuptools import setup, find_packages
-from codecs import open
-from os import path
-
-here = path.abspath(path.dirname(__file__))
-
+from setuptools import setup
+from setuptools import find_packages
 
 
 setup(
-    name='certbot-vault',  # Required
-    version='0.2.0',  # Required
+    name='certbot-vault2',  # Required
+    version='0.3.0',  # Required
     description='Certbot plugin to store certificates in Hashicorp Vault',
-    url='https://github.com/deathowl/certbot-vault-plugin',  # Optional
+    url='https://github.com/vitalvas/certbot-vault-plugin',  # Optional
 
-    author='Balint Csergo',  # Optional
-
-    author_email='<bcsergo@emarsys.com>',  # Optional
+    author='Vitaliy Vasilenko',  # Optional
+    author_email='<source@vitalvas.com>',  # Optional
 
     classifiers=[
         'Development Status :: 4 - Beta',
+        'Environment :: Plugins',
+        'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Security',
+        'Topic :: System :: Installation/Setup',
+        'Topic :: System :: Networking',
+        'Topic :: System :: Systems Administration',
+        'Topic :: Utilities'
     ],
-    keywords='certbot vault',  # Optional
 
     packages=find_packages(),  # Required
+    include_package_data=True,
 
     install_requires=[
         'acme>=0.22.0',
@@ -39,13 +42,10 @@ setup(
         'zope.interface',
         'hvac'
     ],
-    include_package_data=True,
+
     entry_points={
-        'letsencrypt.plugins': [
+        'certbot.plugins': [
             'vault = certbot_vault.plugin:VaultInstaller',
         ],
-    },
-
-
-
+    }
 )
