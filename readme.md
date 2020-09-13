@@ -1,7 +1,6 @@
 # Certbot-Vault
 Certbot plugin for Vault
 
-
 Installation guide:
 * Install [Vault](https://www.vaultproject.io/)
 * Get a Vault token

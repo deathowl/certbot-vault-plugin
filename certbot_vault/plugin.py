@@ -4,12 +4,14 @@ from __future__ import print_function
 
 import os
 import logging
-
-import zope.interface
-
 import hvac
 
+import zope.interface
+import OpenSSL.crypto
+
+from datetime import datetime
 from certbot import interfaces
+from certbot import errors
 from certbot.plugins import common
 
 
@@ -27,24 +29,45 @@ class VaultInstaller(common.Plugin):
             default=os.getenv('VAULT_TOKEN'),
             help="Vault access token"
         )
+        add("vault-role-id"
+            default=os.getenv('VAULT_ROLE_ID'),
+            help='AppRole ID'
+        )
+        add("vault-secret-id"
+            default=os.getenv('VAULT_SECRET_ID'),
+            help='AppRole Secret ID'
+        )
         add("vault-addr",
             default=os.getenv('VAULT_ADDR'),
             help="Vault URL"
         )
+        add("vault-mount",
+            default=os.getenv('VAULT_MOUNT'),
+            help="Vault Mount Point"
+        )
         add("vault-path",
             default=os.getenv('VAULT_PATH'),
-            help="Vault Path"
+            help="Vault Mount Point"
         )
 
     def __init__(self, *args, **kwargs):
         super(VaultInstaller, self).__init__(*args, **kwargs)
-        self.hvac_client = hvac.Client(self.conf('vault-addr'), token=self.conf('vault-token'))
+        self.hvac_client = hvac.Client(self.conf('vault-addr'))
+
+        if self.conf('vault-token'):
+            self.hvac_client.token = self.conf('vault-token')
+
+
+        if self.conf('vault-role-id') and self.conf('vault-secret-id'):
+            self.hvac_client.auth_approle(self.conf('vault-role-id'), self.conf('vault-secret-id'))
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
         """
         Prepare the plugin
         """
-        pass  # pragma: no cover
+
+        if not self.hvac_client.is_authenticated():
+            raise errors.PluginError('Not authenticated')
 
     def more_info(self):  # pylint: disable=missing-docstring,no-self-use
         """
@@ -52,9 +75,8 @@ class VaultInstaller(common.Plugin):
         """
         return (
             "Hashicorp Vault Plugin",
-            "Vault: %s Path: %" % (
+            "Vault: %s" % (
                 self.conf('vault-addr'),
-                self.conf('vault-path')
             )
         )
 
@@ -74,17 +96,44 @@ class VaultInstaller(common.Plugin):
         :raises .PluginError: when cert cannot be deployed
         """
 
-        self.hvac_client.renew_token()
+        cert = open(cert_path).read()
+
+        date_format = "%Y%m%d%H%M%SZ"
+
+        openssl_cert = OpenSSL.crypto.load_certificate(
+            OpenSSL.crypto.FILETYPE_PEM,
+            cert
+        )
 
         data = {
-            'cert': open(cert_path).read(),
+            'type': 'urn:scheme:type:certificate',
+            'cert': cert,
             'key': open(key_path).read(),
-            'chain': open(fullchain_path).read()
+            'chain': open(fullchain_path).read(),
+            'serial': openssl_cert.get_serial_number(),
+            'life': {
+                'issued': int(datetime.strptime(openssl_cert.get_notBefore().decode(), date_format).timestamp()),
+                'expires': int(datetime.strptime(openssl_cert.get_notAfter().decode(), date_format).timestamp()),
+            }
         }
 
-        self.hvac_client.write(
-            os.path.join(self.conf('vault-path'), 'data', domain),
-            data=data
+        domains = []
+        ext_count = openssl_cert.get_extension_count()
+        for i in range(0, ext_count):
+            ext = openssl_cert.get_extension(i)
+            if 'subjectAltName' in str(ext.get_short_name()):
+                sub = ext._subjectAltNameString()
+                for row in [x.strip() for x in sub.split(',')]:
+                    if row.startswith('DNS:'):
+                        domains.append(row[len('DNS:'):])
+
+        if domains:
+            data['domains'] = domains
+
+        self.hvac_client.secrets.kv.v2.create_or_update_secret(
+            mount_point=self.conf('vault-mount'),
+            path=os.path.join(self.conf('vault-path'), domain),
+            secret=data
         )
 
     def enhance(self, domain, enhancement, options=None):  # pylint: disable=missing-docstring,no-self-use
