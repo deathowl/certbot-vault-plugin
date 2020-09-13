@@ -25,41 +25,41 @@ class VaultInstaller(common.Plugin):
 
     @classmethod
     def add_parser_arguments(cls, add):
-        add("vault-token",
+        add("token",
             default=os.getenv('VAULT_TOKEN'),
             help="Vault access token"
         )
-        add("vault-role-id",
+        add("role-id",
             default=os.getenv('VAULT_ROLE_ID'),
             help='AppRole ID'
         )
-        add("vault-secret-id",
+        add("secret-id",
             default=os.getenv('VAULT_SECRET_ID'),
             help='AppRole Secret ID'
         )
-        add("vault-addr",
+        add("addr",
             default=os.getenv('VAULT_ADDR'),
             help="Vault URL"
         )
-        add("vault-mount",
+        add("mount",
             default=os.getenv('VAULT_MOUNT'),
             help="Vault Mount Point"
         )
-        add("vault-path",
+        add("path",
             default=os.getenv('VAULT_PATH'),
             help="Vault Mount Point"
         )
 
     def __init__(self, *args, **kwargs):
         super(VaultInstaller, self).__init__(*args, **kwargs)
-        self.hvac_client = hvac.Client(self.conf('vault-addr'))
+        self.hvac_client = hvac.Client(self.conf('addr'))
 
-        if self.conf('vault-token'):
-            self.hvac_client.token = self.conf('vault-token')
+        if self.conf('token'):
+            self.hvac_client.token = self.conf('token')
 
 
-        if self.conf('vault-role-id') and self.conf('vault-secret-id'):
-            self.hvac_client.auth_approle(self.conf('vault-role-id'), self.conf('vault-secret-id'))
+        if self.conf('role-id') and self.conf('secret-id'):
+            self.hvac_client.auth_approle(self.conf('role-id'), self.conf('secret-id'))
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
         """
@@ -76,7 +76,7 @@ class VaultInstaller(common.Plugin):
         return (
             "Hashicorp Vault Plugin",
             "Vault: %s" % (
-                self.conf('vault-addr'),
+                self.conf('addr'),
             )
         )
 
@@ -131,11 +131,11 @@ class VaultInstaller(common.Plugin):
             data['domains'] = domains
 
         int_path = domain
-        if self.conf('vault-path'):
-            int_path = os.path.join(self.conf('vault-path'), domain)
+        if self.conf('path'):
+            int_path = os.path.join(self.conf('path'), domain)
 
         self.hvac_client.secrets.kv.v2.create_or_update_secret(
-            mount_point=self.conf('vault-mount'),
+            mount_point=self.conf('mount'),
             path=int_path,
             secret=data
         )
