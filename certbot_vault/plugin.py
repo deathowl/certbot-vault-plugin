@@ -130,9 +130,13 @@ class VaultInstaller(common.Plugin):
         if domains:
             data['domains'] = domains
 
+        int_path = domain
+        if self.conf('vault-path'):
+            int_path = os.path.join(self.conf('vault-path'), domain)
+
         self.hvac_client.secrets.kv.v2.create_or_update_secret(
             mount_point=self.conf('vault-mount'),
-            path=os.path.join(self.conf('vault-path'), domain),
+            path=int_path,
             secret=data
         )
 
