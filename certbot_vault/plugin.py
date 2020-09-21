@@ -77,7 +77,7 @@ class VaultInstaller(common.Plugin):
             )
 
         if self.conf('jwt-role') and self.conf('jwt-key'):
-            self.hvac_client.jwt_login(
+            self.hvac_client.jwt.jwt_login(
                 self.conf('jwt-role'),
                 self.conf('jwt-key'),
                 path=self.conf('auth-path')

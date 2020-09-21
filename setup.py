@@ -4,7 +4,7 @@ from setuptools import find_packages
 
 setup(
     name='certbot-vault2',  # Required
-    version='0.3.4',  # Required
+    version='0.3.5',  # Required
     description='Certbot plugin to store certificates in Hashicorp Vault',
     url='https://github.com/vitalvas/certbot-vault-plugin',  # Optional
 
