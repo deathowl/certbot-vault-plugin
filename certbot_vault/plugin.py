@@ -25,6 +25,10 @@ class VaultInstaller(common.Plugin):
 
     @classmethod
     def add_parser_arguments(cls, add):
+        add('auth-path',
+            default=os.getenv('VAULT_AUTH_PATH'),
+            help='Auth path'
+        )
         add("token",
             default=os.getenv('VAULT_TOKEN'),
             help="Vault access token"
@@ -36,6 +40,14 @@ class VaultInstaller(common.Plugin):
         add("secret-id",
             default=os.getenv('VAULT_SECRET_ID'),
             help='AppRole Secret ID'
+        )
+        add("jwt-role",
+            default=os.getenv('VAULT_JWT_ROLE'),
+            help='JWT Role'
+        )
+        add("jwt-key",
+            default=os.getenv('VAULT_JWT_KEY'),
+            help='JWT Key'
         )
         add("addr",
             default=os.getenv('VAULT_ADDR'),
@@ -57,9 +69,19 @@ class VaultInstaller(common.Plugin):
         if self.conf('token'):
             self.hvac_client.token = self.conf('token')
 
-
         if self.conf('role-id') and self.conf('secret-id'):
-            self.hvac_client.auth_approle(self.conf('role-id'), self.conf('secret-id'))
+            self.hvac_client.auth_approle(
+                self.conf('role-id'),
+                self.conf('secret-id'),
+                mount_point=self.conf('auth-path')
+            )
+
+        if self.conf('jwt-role') and self.conf('jwt-key'):
+            self.hvac_client.jwt_login(
+                self.conf('jwt-role'),
+                self.conf('jwt-key'),
+                path=self.conf('auth-path')
+            )
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
         """
