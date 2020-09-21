@@ -132,7 +132,7 @@ class VaultInstaller(common.Plugin):
             'cert': cert,
             'key': open(key_path).read(),
             'chain': open(fullchain_path).read(),
-            'serial': openssl_cert.get_serial_number(),
+            'serial': str(openssl_cert.get_serial_number()),
             'life': {
                 'issued': int(datetime.strptime(openssl_cert.get_notBefore().decode(), date_format).timestamp()),
                 'expires': int(datetime.strptime(openssl_cert.get_notAfter().decode(), date_format).timestamp()),
