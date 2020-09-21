@@ -70,10 +70,11 @@ class VaultInstaller(common.Plugin):
             self.hvac_client.token = self.conf('token')
 
         if self.conf('role-id') and self.conf('secret-id'):
+            auth_mount_point = self.conf('auth-path') or 'approle'
             self.hvac_client.auth_approle(
                 self.conf('role-id'),
                 self.conf('secret-id'),
-                mount_point=self.conf('auth-path')
+                mount_point=auth_mount_point
             )
 
         if self.conf('jwt-role') and self.conf('jwt-key'):
