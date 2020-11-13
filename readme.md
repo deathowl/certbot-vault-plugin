@@ -9,7 +9,7 @@ Installation guide:
 * Install [Vault](https://www.vaultproject.io/)
 * Get a Vault token
 * Deploy latest version of [Certbot](https://github.com/certbot/certbot)
-* Install certbot-vault `plugin pip install certbot-vault`
+* Install certbot-vault plugin `pip install git+https://github.com/emartech/certbot-vault-plugin.git`
 
 ## Use cases:
 * Get/Renew and store new certificate in vault
