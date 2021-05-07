@@ -26,7 +26,7 @@ class TestAuthPlugin(unittest.TestCase):
         self.config.fullchain_path = constants.CLI_DEFAULTS["auth_chain_path"]
         self.config.chain_path = constants.CLI_DEFAULTS["auth_chain_path"]
         self.config.server = "example.com"
-        self.config.certbot_vault_installer_engine_path = "certificates"
+        self.config.certbot_vault_installer_vault_engine_name = "certificates"
 
         self.config.__setattr__(self.name_cfg + "vault-url", "http://localhost:8200")
         self.config.__setattr__(self.name_cfg + "vault-url", "testike")
