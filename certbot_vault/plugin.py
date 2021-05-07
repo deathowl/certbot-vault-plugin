@@ -1,9 +1,8 @@
 """Vault Let's Encrypt installer plugin."""
 
-from __future__ import print_function
-
 import os
 import logging
+from types import ClassMethodDescriptorType
 
 import zope.interface
 
@@ -23,59 +22,61 @@ class VaultInstaller(common.Plugin):
 
     @classmethod
     def add_parser_arguments(cls, add):
-        add("vault-token", default=os.getenv('VAULT_TOKEN'),
-            help="CloudFront distribution id")
-        add("vault-url", default=os.getenv('VAULT_URL'),
-            help="CloudFront distribution id")
+        add("vault-token", default=os.getenv("VAULT_TOKEN"), help="Token for accessing vault")
+        add("vault-url", default=os.getenv("VAULT_URL"))
+        add(
+            "vault-engine-name",
+            default=os.getenv("VAULT_ENGINE_NAME", "certificates"),
+            help="Secrets engine path",
+        )
 
     def __init__(self, *args, **kwargs):
         super(VaultInstaller, self).__init__(*args, **kwargs)
-        self.hvac_client = hvac.Client(self.conf('vault-url'), token=self.conf('vault-token'))
+        self.hvac_client = hvac.Client(self.conf("vault-url"), token=self.conf("vault-token"))
 
-    def prepare(self):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
+    def prepare(self):
+        pass
 
-    def more_info(self):  # pylint: disable=missing-docstring,no-self-use
+    def more_info(self):
         return ""
 
-    def get_all_names(self):  # pylint: disable=missing-docstring,no-self-use
+    def get_all_names(self):
         return []
 
     def deploy_cert(self, domain, cert_path, key_path, chain_path, fullchain_path):
-        """
-        Upload Certificate to Vault
-        """
         self.hvac_client.renew_token()
-        name = "certificates/le-%s" % domain
+        name = "{engine_name}/le-{domain}".format(
+            engine_name=self.conf("engine-path"),
+            domain=domain,
+        )
         body = open(cert_path).read()
         key = open(key_path).read()
         chain = open(fullchain_path).read()
-
         self.hvac_client.write(path=name, body=body, key=key, chain=chain)
 
-    def enhance(self, domain, enhancement, options=None):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
+    def enhance(self, domain, enhancement, options=None):
+        pass
 
-    def supported_enhancements(self):  # pylint: disable=missing-docstring,no-self-use
-        return []  # pragma: no cover
+    def supported_enhancements(self):
+        return []
 
-    def get_all_certs_keys(self):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
+    def get_all_certs_keys(self):
+        pass
 
-    def save(self, title=None, temporary=False):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
+    def save(self, title=None, temporary=False):
+        pass
 
-    def rollback_checkpoints(self, rollback=1):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
+    def rollback_checkpoints(self, rollback=1):
+        pass
 
-    def recovery_routine(self):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
+    def recovery_routine(self):
+        pass
 
-    def view_config_changes(self):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
+    def view_config_changes(self):
+        pass
 
-    def config_test(self):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
+    def config_test(self):
+        pass
 
-    def restart(self):  # pylint: disable=missing-docstring,no-self-use
-        pass  # pragma: no cover
+    def restart(self):
+        pass
