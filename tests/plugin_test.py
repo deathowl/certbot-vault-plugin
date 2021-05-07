@@ -4,7 +4,7 @@ import tempfile
 
 from certbot_vault.plugin import VaultInstaller
 import unittest
-from unittest import mock
+from unittest.mock import patch, MagicMock
 import hvac
 
 from certbot._internal import configuration
@@ -13,13 +13,11 @@ from certbot._internal import constants
 
 class TestAuthPlugin(unittest.TestCase):
     def setUp(self):
-        self.redis_client_mock = mock.patch("hvac.Client").start().return_value
+        self.redis_client_mock = patch("hvac.Client").start().return_value
         self.name = "certbot-vault-installer"
         self.name_cfg = self.name.replace("-", "_") + "_"
         self.tempdir = tempfile.mkdtemp(dir=tempfile.gettempdir())
-        self.config = configuration.NamespaceConfig(
-            mock.MagicMock(**constants.CLI_DEFAULTS)
-        )
+        self.config = configuration.NamespaceConfig(MagicMock(**constants.CLI_DEFAULTS))
         self.config.verb = "certonly"
         self.config.config_dir = os.path.join(self.tempdir, "config")
         self.config.work_dir = os.path.join(self.tempdir, "work")
@@ -28,9 +26,10 @@ class TestAuthPlugin(unittest.TestCase):
         self.config.fullchain_path = constants.CLI_DEFAULTS["auth_chain_path"]
         self.config.chain_path = constants.CLI_DEFAULTS["auth_chain_path"]
         self.config.server = "example.com"
+        self.config.certbot_vault_installer_engine_path = "certificates"
+
         self.config.__setattr__(self.name_cfg + "vault-url", "http://localhost:8200")
         self.config.__setattr__(self.name_cfg + "vault-url", "testike")
-        print("self.config", self.config)
         self.subject = VaultInstaller(self.config, self.name)
 
     def test_http_challenge_gets_saved_to_redis(self):

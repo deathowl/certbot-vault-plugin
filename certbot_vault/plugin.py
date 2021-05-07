@@ -2,6 +2,7 @@
 
 import os
 import logging
+from types import ClassMethodDescriptorType
 
 import zope.interface
 
@@ -21,14 +22,17 @@ class VaultInstaller(common.Plugin):
 
     @classmethod
     def add_parser_arguments(cls, add):
-        add("vault-token", default=os.getenv('VAULT_TOKEN'),
-            help="CloudFront distribution id")
-        add("vault-url", default=os.getenv('VAULT_URL'),
-            help="CloudFront distribution id")
+        add("vault-token", default=os.getenv("VAULT_TOKEN"), help="Token for accessing vault")
+        add("vault-url", default=os.getenv("VAULT_URL"))
+        add(
+            "vault-engine-name",
+            default=os.getenv("VAULT_ENGINE_NAME", "certificates"),
+            help="Secrets engine path",
+        )
 
     def __init__(self, *args, **kwargs):
         super(VaultInstaller, self).__init__(*args, **kwargs)
-        self.hvac_client = hvac.Client(self.conf('vault-url'), token=self.conf('vault-token'))
+        self.hvac_client = hvac.Client(self.conf("vault-url"), token=self.conf("vault-token"))
 
     def prepare(self):
         pass
@@ -41,11 +45,13 @@ class VaultInstaller(common.Plugin):
 
     def deploy_cert(self, domain, cert_path, key_path, chain_path, fullchain_path):
         self.hvac_client.renew_token()
-        name = "certificates/le-%s" % domain
+        name = "{engine_name}/le-{domain}".format(
+            engine_name=self.conf("engine-path"),
+            domain=domain,
+        )
         body = open(cert_path).read()
         key = open(key_path).read()
         chain = open(fullchain_path).read()
-
         self.hvac_client.write(path=name, body=body, key=key, chain=chain)
 
     def enhance(self, domain, enhancement, options=None):
