@@ -45,7 +45,7 @@ class VaultInstaller(common.Plugin):
     def deploy_cert(self, domain, cert_path, key_path, chain_path, fullchain_path):
         self.hvac_client.renew_token()
         name = "{engine_name}/le-{domain}".format(
-            engine_name=self.conf("engine-path"),
+            engine_name=self.conf("vault-engine-name"),
             domain=domain,
         )
         body = open(cert_path).read()
