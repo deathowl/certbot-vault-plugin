@@ -2,7 +2,6 @@
 
 import os
 import logging
-from types import ClassMethodDescriptorType
 
 import zope.interface
 
