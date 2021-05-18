@@ -49,7 +49,7 @@ class TestAuthPlugin(unittest.TestCase):
 
         self.redis_client_mock.write.assert_called_with(
             body="testcrt",
-            chain="fullchain",
+            chain="testchain",
             key="testkey",
             path="certificates/le-test",
         )

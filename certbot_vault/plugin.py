@@ -50,7 +50,7 @@ class VaultInstaller(common.Plugin):
         )
         body = open(cert_path).read()
         key = open(key_path).read()
-        chain = open(fullchain_path).read()
+        chain = open(chain_path).read()
         self.hvac_client.write(path=name, body=body, key=key, chain=chain)
 
     def enhance(self, domain, enhancement, options=None):
