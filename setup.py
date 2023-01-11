@@ -3,13 +3,14 @@ from setuptools import find_packages
 
 
 setup(
-    name='certbot-vault2',  # Required
+    name='certbot-vault',  # Required
     version='0.3.8',  # Required
     description='Certbot plugin to store certificates in Hashicorp Vault',
-    url='https://github.com/vitalvas/certbot-vault-plugin',  # Optional
+    url='https://github.com/deathowl/certbot-vault-plugin',  # Optional
 
-    author='Vitaliy Vasilenko',  # Optional
-    author_email='<source@vitalvas.com>',  # Optional
+
+    author='Balint Csergo',  # Optional
+    author_email='<deathowlzz@gmail.com>',  # Optional
 
     classifiers=[
         'Development Status :: 4 - Beta',
