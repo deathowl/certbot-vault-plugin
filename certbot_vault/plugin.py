@@ -189,3 +189,11 @@ class VaultInstaller(common.Plugin):
 
     def restart(self):  # pylint: disable=missing-docstring,no-self-use
         pass  # pragma: no cover
+    
+    def renew_deploy(self, lineage, *args, **kwargs):  # pylint: disable=missing-docstring,no-self-use,unused-argument
+    """
+    Renew certificates when calling `certbot renew`
+    """
+    self.deploy_cert(lineage.names()[0], lineage.cert_path, lineage.key_path, lineage.chain_path, lineage.fullchain_path)
+
+interfaces.RenewDeployer.register(VaultInstaller)
